@@ -17,7 +17,7 @@ Compute orientation:
 Cases:
        Colinear          Clockwise        Counter Clockwise
         + P3		   + P3			+ P3
-       /		  /		         \
+       /                  /                      \
       /			 /                        \  
      + P2		+ P2                       + P2
     /			|			   | 
