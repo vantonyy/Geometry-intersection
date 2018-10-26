@@ -103,7 +103,7 @@ bool isIntersected(const Geometry& g, const Polygon& p)
 	return false;
 }
 
-namespace test {
+namespace otherImpl {
 
 template <typename Point>
 bool onSegment1(const Point& p, const Point& q, const Point& p1)
