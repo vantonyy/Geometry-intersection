@@ -2,6 +2,8 @@
 
 #include "point.hpp"
 
+#include <chrono>
+
 namespace core {
 
 enum Orient {
@@ -17,5 +19,12 @@ enum ShapeTypeEnum {
 };
 
 typedef Point<double> DPoint;
+
+typedef std::chrono::nanoseconds nanoseconds;
+typedef std::chrono::microseconds microseconds;
+typedef std::chrono::milliseconds milliseconds;
+typedef std::chrono::seconds seconds;
+typedef std::chrono::minutes minutes;
+typedef std::chrono::hours hours;
 
 }

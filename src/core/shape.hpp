@@ -144,4 +144,20 @@ private:
 	ShapeId m_id;
 };
 
+std::ostream& operator<<(std::ostream& out, const Shape& s)
+{
+	out << "============ Dump shape =============" << std::endl;
+	out << "Type: " << s.getType().getName() << std::endl;
+	out << "ID: " << s.getId() << std::endl;
+	size_t pointsNum = s.getPointsNum();
+	out << "Num of points: " << pointsNum << std::endl;
+	out << "Points: {x, y}" << std::endl;
+	out << "        ------" << std::endl;
+	for (const Shape::PointType& p : s.getPoints()) {
+		out << "\t{" << p.x << ", " << p.y << "}" << std::endl;
+	}
+	out << "=====================================" << std::endl;
+	return out;
+}
+
 }
