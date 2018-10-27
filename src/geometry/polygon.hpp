@@ -2,7 +2,7 @@
 
 #include "shape.hpp"
 
-namespace core {
+namespace geometry {
 
 class Polygon
 	: public Shape

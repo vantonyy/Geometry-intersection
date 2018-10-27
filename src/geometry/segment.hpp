@@ -3,7 +3,7 @@
 #include "point.hpp"
 #include "types.hpp"
 
-namespace core {
+namespace geometry {
 
 class Segment
 	: public Shape
@@ -13,11 +13,11 @@ public:
 		: Shape()
 	{}
 
-	Segment(const PointType& p1, const PointType& p2)
+	Segment(const Point& p1, const Point& p2)
 		: Shape({ p1, p2 })
 	{}
 
-	Segment(const std::pair<PointType, PointType>&& points)
+	Segment(const std::pair<Point, Point>&& points)
 		: Shape({points.first, points.second})
 	{}
 

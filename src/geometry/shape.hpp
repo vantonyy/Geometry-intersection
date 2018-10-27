@@ -6,7 +6,7 @@
 #include <string>
 #include <initializer_list>
 
-namespace core {
+namespace geometry {
 
 class ShapeType
 {
@@ -67,8 +67,8 @@ private:
 class Shape
 {
 public:
-	typedef DPoint PointType;
-	typedef std::vector<PointType> Points;
+	typedef Point<double> Point;
+	typedef std::vector<Point> Points;
 public:
 	Shape() = default;
 
@@ -115,17 +115,17 @@ public:
 		m_points = points;
 	}
 
-	const PointType& getPoint(unsigned index) const
+	const Point& getPoint(unsigned index) const
 	{
 		return m_points.at(index);
 	}
 
-	void setPoint(unsigned index, const PointType& point)
+	void setPoint(unsigned index, const Point& point)
 	{
 		m_points.at(index) = point;
 	}
 
-	void setPoint(unsigned index, PointType&& point)
+	void setPoint(unsigned index, Point&& point)
 	{
 		m_points.at(index) = point;
 	}
@@ -153,7 +153,7 @@ std::ostream& operator<<(std::ostream& out, const Shape& s)
 	out << "Num of points: " << pointsNum << std::endl;
 	out << "Points: {x, y}" << std::endl;
 	out << "        ------" << std::endl;
-	for (const Shape::PointType& p : s.getPoints()) {
+	for (const Shape::Point& p : s.getPoints()) {
 		out << "\t{" << p.x << ", " << p.y << "}" << std::endl;
 	}
 	out << "=====================================" << std::endl;

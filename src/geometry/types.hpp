@@ -4,9 +4,9 @@
 
 #include <chrono>
 
-namespace core {
+namespace geometry {
 
-enum Orient {
+enum OrientTypeEnum {
 	Colinear = 0,
 	Clockwise = 1,
 	CounterClockwise = -1
@@ -17,14 +17,5 @@ enum ShapeTypeEnum {
 	SegmentType = 1,
 	UnknownType
 };
-
-typedef Point<double> DPoint;
-
-typedef std::chrono::nanoseconds nanoseconds;
-typedef std::chrono::microseconds microseconds;
-typedef std::chrono::milliseconds milliseconds;
-typedef std::chrono::seconds seconds;
-typedef std::chrono::minutes minutes;
-typedef std::chrono::hours hours;
 
 }

@@ -8,7 +8,9 @@
 #include <iostream>
 #include <algorithm>
 
-namespace core {
+//https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
+
+namespace geometry {
 
 /* 
 Compute orientation:
@@ -49,7 +51,7 @@ Example of clockwise:
 */
 
 template <typename Point>
-Orient orientation(const Point& p1, const Point& p2, const Point& p3)
+OrientTypeEnum orientation(const Point& p1, const Point& p2, const Point& p3)
 {
 	typename Point::Coord o = (p3.x - p2.x) * (p2.y - p1.y) -
 		(p3.y - p2.y) * (p2.x - p1.x);
@@ -58,22 +60,22 @@ Orient orientation(const Point& p1, const Point& p2, const Point& p3)
 }
 
 template <typename Geometry>
-typename Geometry::PointType::Coord area(const Geometry&);
+typename Geometry::Point::Coord area(const Geometry&);
 
 template <>
-Polygon::PointType::Coord area(const Polygon& p)
+Polygon::Point::Coord area(const Polygon& p)
 {
 	size_t pointsNum = p.getPointsNum();
-	Polygon::PointType::Coord area = 0;
-	for (size_t i = 0, j = pointsNum - 1; i != pointsNum; ++i, j = i) {
-		const Polygon::PointType& p1 = p.getPoint(i);
-		const Polygon::PointType& p2 = p.getPoint(j);
+	Polygon::Point::Coord area = 0;
+	for (size_t i = 0, iPrev = pointsNum - 1; i != pointsNum; ++i, iPrev = i) {
+		const Polygon::Point& p1 = p.getPoint(i);
+		const Polygon::Point& p2 = p.getPoint(iPrev);
 		area += (p2.x + p2.x) * (p2.y - p1.y);
 	}
-	return area / Polygon::PointType::Coord(2);
+	return area / Polygon::Point::Coord(2);
 }
 
-Orient orientation(const Polygon& p)
+OrientTypeEnum orientation(const Polygon& p)
 {
 	return 0 > area(p) ? Clockwise : CounterClockwise;
 }
@@ -81,9 +83,9 @@ Orient orientation(const Polygon& p)
 bool isManhattan(const Shape& s)
 {
 	size_t pointsNum = s.getPointsNum();
-	for (size_t i = 0, j = pointsNum - 1; i != pointsNum; ++i, j = i) {
-		const Shape::PointType& p = s.getPoint(i);
-		const Shape::PointType& q = s.getPoint(j);
+	for (size_t i = 0, iPrev = pointsNum - 1; i != pointsNum; ++i, iPrev = i) {
+		const Shape::Point& p = s.getPoint(i);
+		const Shape::Point& q = s.getPoint(iPrev);
 		if (p.x != q.x && p.y != q.y) {
 			return false;
 		}
@@ -103,21 +105,21 @@ bool inRange(const ValueType& a, const ValueType& b, const ValueType& v)
 template <typename Point>
 bool onSegment(const Segment& s, const Point& p1)
 {
-	const Segment::PointType& p = s.getPoint(0);
-	const Segment::PointType& q = s.getPoint(1);
+	const Segment::Point& p = s.getPoint(0);
+	const Segment::Point& q = s.getPoint(1);
 	return inRange(p.x, q.x, p1.x) && inRange(p.y, q.y, p1.y);
 }
 
 bool isIntersected(const Segment& s1, const Segment& s2)
 {
-	const Segment::PointType& p1 = s1.getPoint(0);
-	const Segment::PointType& q1 = s1.getPoint(1);
-	const Segment::PointType& p2 = s2.getPoint(0);
-	const Segment::PointType& q2 = s2.getPoint(1);
-	Orient o1 = orientation(p1, q1, p2);
-	Orient o2 = orientation(p1, q1, q2);
-	Orient o3 = orientation(p2, q2, p1);
-	Orient o4 = orientation(p2, q2, q1);
+	const Segment::Point& p1 = s1.getPoint(0);
+	const Segment::Point& q1 = s1.getPoint(1);
+	const Segment::Point& p2 = s2.getPoint(0);
+	const Segment::Point& q2 = s2.getPoint(1);
+	OrientTypeEnum o1 = orientation(p1, q1, p2);
+	OrientTypeEnum o2 = orientation(p1, q1, q2);
+	OrientTypeEnum o3 = orientation(p2, q2, p1);
+	OrientTypeEnum o4 = orientation(p2, q2, q1);
 	return (o1 != o2 && o3 != o4) ||
 	       (Colinear == o1 && onSegment(s1, p2)) ||
 	       (Colinear == o2 && onSegment(s1, q2)) ||
@@ -131,8 +133,8 @@ bool isIntersected(const Geometry& g, const Shape& sh)
 {
 	size_t pointsNum = sh.getPointsNum();
 	for (size_t i = 0, j = pointsNum - 1; i != pointsNum; ++i, j = i) {
-		const Shape::PointType& q1 = sh.getPoint(i);
-		const Shape::PointType& q2 = sh.getPoint(j);
+		const Shape::Point& q1 = sh.getPoint(i);
+		const Shape::Point& q2 = sh.getPoint(j);
 		if (isIntersected(Segment{q1, q2}, g)) {
 			return true;
 		}
@@ -144,22 +146,21 @@ bool isIntersected(const Geometry& g, const Shape& sh)
 
 namespace opt {
 
-#define inRange(m, M, v) \
+#define isInRange(m, M, v) \
 		(m <= v && v <= M) || (M <= v && v <= m)
 
-template <typename Point>
-bool onSegment(const Point& p, const Point& q, const Point& p1)
+bool onSegment(const Shape::Point& p, const Shape::Point& q, const Shape::Point& p1)
 {
-	return inRange(p.x, q.x, p1.x) && inRange(p.y, q.y, p1.y);
+	return isInRange(p.x, q.x, p1.x) && isInRange(p.y, q.y, p1.y);
 }
 
-bool isIntersected(const DPoint& p1, const DPoint& q1, 
-		   const DPoint& p2, const DPoint& q2)
+bool isIntersected(const Shape::Point& p1, const Shape::Point& q1,
+		   const Shape::Point& p2, const Shape::Point& q2)
 {
-	Orient o1 = orientation(p1, q1, p2);
-	Orient o2 = orientation(p1, q1, q2);
-	Orient o3 = orientation(p2, q2, p1);
-	Orient o4 = orientation(p2, q2, q1);
+	OrientTypeEnum o1 = orientation(p1, q1, p2);
+	OrientTypeEnum o2 = orientation(p1, q1, q2);
+	OrientTypeEnum o3 = orientation(p2, q2, p1);
+	OrientTypeEnum o4 = orientation(p2, q2, q1);
 	return (o1 != o2 && o3 != o4) ||
 		(Colinear == o1 && onSegment(p1, q1, p2)) ||
 		(Colinear == o2 && onSegment(p1, q1, q2)) ||
@@ -172,17 +173,27 @@ bool isIntersected(const Shape& s1, const Shape& s2)
 {
 	size_t pointsNum1 = s1.getPointsNum();
 	size_t pointsNum2 = s2.getPointsNum();
-	for (size_t i = 0, i1 = pointsNum1 - 1; i != pointsNum1; ++i, i1 = i) {
-		const Shape::PointType& p1 = s1.getPoint(i);
-		const Shape::PointType& p2 = s1.getPoint(i1);
-		for (size_t j = 0, j1 = pointsNum2 - 1; j != pointsNum2; ++j, j1 = j) {
-			const Shape::PointType& q1 = s2.getPoint(j);
-			const Shape::PointType& q2 = s2.getPoint(j1);
+	for (size_t i = 0, iPrev = pointsNum1 - 1; i != pointsNum1; ++i, iPrev = i) {
+		const Shape::Point& p1 = s1.getPoint(i);
+		const Shape::Point& p2 = s1.getPoint(iPrev);
+		for (size_t j = 0, jPrev = pointsNum2 - 1; j != pointsNum2; ++j, jPrev = j) {
+			const Shape::Point& q1 = s2.getPoint(j);
+			const Shape::Point& q2 = s2.getPoint(jPrev);
 			if (isIntersected(p1, p2, q1, q2)) {
 				return true;
 			}
 		}
 	}
+	return false;
+}
+
+}
+
+namespace scanLineImpl {
+
+bool isIntersected(const Shape&, const Shape&)
+{
+	//TODO: implement
 	return false;
 }
 

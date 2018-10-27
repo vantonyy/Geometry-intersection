@@ -1,6 +1,6 @@
 #pragma once
 
-namespace core {
+namespace geometry {
 
 template <typename CoordType>
 class Point
