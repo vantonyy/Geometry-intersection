@@ -8,8 +8,6 @@
 #include <iostream>
 #include <algorithm>
 
-//https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
-
 namespace core {
 
 /* 
