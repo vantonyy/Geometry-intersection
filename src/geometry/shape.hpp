@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <initializer_list>
+#include <cassert>
 
 namespace geometry {
 
@@ -117,17 +118,20 @@ public:
 
 	const Point& getPoint(unsigned index) const
 	{
-		return m_points.at(index);
+		assert(m_points.size() > index);
+		return m_points[index];
 	}
 
 	void setPoint(unsigned index, const Point& point)
 	{
-		m_points.at(index) = point;
+		assert(m_points.size() > index);
+		m_points[index] = point;
 	}
 
 	void setPoint(unsigned index, Point&& point)
 	{
-		m_points.at(index) = point;
+		assert(m_points.size() > index);
+		m_points[index] = point;
 	}
 
 	size_t getPointsNum() const
@@ -138,7 +142,7 @@ public:
 	unsigned getId() const
 	{
 		return m_id;
-	}	
+	}
 private:
 	Points m_points;
 	ShapeId m_id;
@@ -154,7 +158,7 @@ std::ostream& operator<<(std::ostream& out, const Shape& s)
 	out << "Points: {x, y}" << std::endl;
 	out << "        ------" << std::endl;
 	for (const Shape::Point& p : s.getPoints()) {
-		out << "\t{" << p.x << ", " << p.y << "}" << std::endl;
+		out << "\t" << p << std::endl;
 	}
 	out << "=====================================" << std::endl;
 	return out;

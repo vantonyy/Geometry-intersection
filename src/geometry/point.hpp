@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace geometry {
 
 template <typename CoordType>
@@ -58,5 +60,12 @@ public:
 	Coord x;
 	Coord y;
 };
+
+template <typename CoordType>
+std::ostream& operator<<(std::ostream& out, const Point<CoordType>& p)
+{
+	out << "{" << p.x << ", " << p.y << "}";
+	return out;
+}
 
 }

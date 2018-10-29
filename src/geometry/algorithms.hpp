@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 //https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 
@@ -93,7 +94,6 @@ bool isManhattan(const Shape& s)
 	return true;
 }
 
-
 namespace nopt {
 
 template <typename ValueType>
@@ -140,6 +140,32 @@ bool isIntersected(const Geometry& g, const Shape& sh)
 		}
 	}
 	return false;
+}
+
+void getIntersectPoint(const Segment& s1, const Segment& s2, Shape::Point& p)
+{
+	assert(nopt::isIntersected(s1, s2));
+	const Segment::Point& p1 = s1.getPoint(0);
+	const Segment::Point& q1 = s1.getPoint(1);
+	const Segment::Point& p2 = s2.getPoint(0);
+	const Segment::Point& q2 = s2.getPoint(1);
+
+	//TODO:
+	const Segment::Point::Coord& k1 = (q1.y - p1.y) / (q1.x - p1.x);
+	const Segment::Point::Coord& k2 = (q2.y - p2.y) / (q2.x - p2.x);
+	const Segment::Point::Coord& b1 = p1.y - k1 * p1.x;
+	const Segment::Point::Coord& b2 = p2.y - k2 * p2.x;
+
+	p.x = (b2 - b1) / (k1 - k2);
+	p.y = p.x * k1 + b1;
+}
+
+Segment::Point getIntersectPoint(const Segment& s1, const Segment& s2)
+{
+	assert(nopt::isIntersected(s1, s2));
+	Segment::Point p;
+	getIntersectPoint(s1, s2, p);
+	return p;
 }
 
 }
