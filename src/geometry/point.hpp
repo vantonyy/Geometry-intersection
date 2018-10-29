@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <numeric>
 
 namespace geometry {
 
@@ -57,7 +58,7 @@ public:
 		return !(*this == rhs);
 	}
 
-	bool isValid()
+	bool isValid() const
 	{
 		return *this != invalidPoint();
 	}
@@ -67,7 +68,7 @@ public:
 		*this = invalidPoint();
 	}
 
-	static const invalidPoint()
+	static const Point<Coord>& invalidPoint()
 	{
 		static Point<Coord> point = {std::numeric_limits<Coord>::max(), std::numeric_limits<Coord>::max()};
 		return point;
