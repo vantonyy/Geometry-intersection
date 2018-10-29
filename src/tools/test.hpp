@@ -59,8 +59,9 @@ private:
 
 	void getPolygons(geometry::Polygon& p1, geometry::Polygon& p2) const
 	{
-		geometry::Polygon::Points ps(1000);
-		for (int i = 0; i < 1000; ++i) {
+		constexpr int m = 9000;
+		geometry::Polygon::Points ps(m);
+		for (int i = 0; i < m; ++i) {
 			ps.push_back({ double(i), double(i + 1) });
 		}
 		p1 = ps;
@@ -75,6 +76,13 @@ public:
 	{
 		geometry::Polygon p = { { 0, 0 },{ 0, 1 },{ 1, 1 },{ 1, 0 } };
 		std::cout << "Manhattan: " << geometry::isManhattan(p) << "\n";
+	}
+
+	void testIntersectedPoint()
+	{
+		geometry::Segment s1({ 1, 0 }, { 1, 3 }), s2({0, 2}, {3, 2});
+		geometry::Segment::Point p = geometry::nopt::getIntersectPoint(s1, s2);
+		std::cout << p << "\n";
 	}
 };
 
