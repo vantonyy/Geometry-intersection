@@ -56,6 +56,22 @@ public:
 	{
 		return !(*this == rhs);
 	}
+
+	bool isValid()
+	{
+		return *this != invalidPoint();
+	}
+
+	void makeInvalid()
+	{
+		*this = invalidPoint();
+	}
+
+	static const invalidPoint()
+	{
+		static Point<Coord> point = {std::numeric_limits<Coord>::max(), std::numeric_limits<Coord>::max()};
+		return point;
+	}
 public:
 	Coord x;
 	Coord y;
