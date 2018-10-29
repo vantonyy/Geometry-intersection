@@ -94,6 +94,23 @@ bool isManhattan(const Shape& s)
 	return true;
 }
 
+void getIntersectPoint(const Shape::Point& A, const Shape::Point& B, const Shape::Point& C, const Shape::Point& D, Shape::Point& p)
+{
+	Shape::Point::Coord a1 = B.y - A.y;
+	Shape::Point::Coord b1 = A.x - B.x;
+	Shape::Point::Coord c1 = a1 * A.x + b1 * A.y;
+	Shape::Point::Coord a2 = D.y - C.y;
+	Shape::Point::Coord b2 = C.x - D.x;
+	Shape::Point::Coord c2 = a2 * C.x + b2 * C.y;
+	Shape::Point::Coord determinant = a1 * b2 - a2 * b1;
+	if (determinant == 0) {
+		p.makeInvalid();
+	} else {
+		p.x = (b2 * c1 - b1 * c2) / determinant;
+		p.y = (a1 * c2 - a2 * c1) / determinant;
+	}
+}	
+
 namespace nopt {
 
 template <typename ValueType>
