@@ -1,1 +1,1 @@
-# Geometry-intersection-algorithms-using-scan-line-method
+# Geometry-intersection-algorithms-using-sweep-line-method
