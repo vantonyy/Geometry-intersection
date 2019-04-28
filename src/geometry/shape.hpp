@@ -29,7 +29,7 @@ public:
 private:
 	static const std::string& getName(ShapeTypeEnum type)
 	{
-		static const std::string names[] = {"Polygon", "Segment", "Unknown"};
+		static const std::string names[] = {"Polygon", "Rect", "Segment", "Unknown"};
 		return isValid(type) ? names[type] : names[UnknownType];
 	}
 
@@ -70,6 +70,7 @@ class Shape
 public:
 	typedef Point<double> Point;
 	typedef std::vector<Point> Points;
+	typedef std::shared_ptr<Shape> Ptr;
 public:
 	Shape() = default;
 
@@ -122,6 +123,12 @@ public:
 		return m_points[index];
 	}
 
+	Point& getPoint(unsigned index)
+	{
+		assert(m_points.size() > index);
+		return m_points[index];
+	}
+
 	void setPoint(unsigned index, const Point& point)
 	{
 		assert(m_points.size() > index);
@@ -142,6 +149,11 @@ public:
 	unsigned getId() const
 	{
 		return m_id;
+	}
+
+	void addPoint(const Point& point)
+	{
+		m_points.push_back(point);
 	}
 private:
 	Points m_points;

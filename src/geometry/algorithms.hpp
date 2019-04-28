@@ -55,7 +55,7 @@ template <typename Point>
 OrientTypeEnum orientation(const Point& p1, const Point& p2, const Point& p3)
 {
 	typename Point::Coord o = (p3.x - p2.x) * (p2.y - p1.y) -
-		(p3.y - p2.y) * (p2.x - p1.x);
+				  (p3.y - p2.y) * (p2.x - p1.x);
 	static constexpr typename Point::Coord zero(0);
 	return zero == o ? Colinear : o > zero ? Clockwise : CounterClockwise;
 }
@@ -93,23 +93,6 @@ bool isManhattan(const Shape& s)
 	}
 	return true;
 }
-
-void getIntersectPoint(const Shape::Point& A, const Shape::Point& B, const Shape::Point& C, const Shape::Point& D, Shape::Point& p)
-{
-	Shape::Point::Coord a1 = B.y - A.y;
-	Shape::Point::Coord b1 = A.x - B.x;
-	Shape::Point::Coord c1 = a1 * A.x + b1 * A.y;
-	Shape::Point::Coord a2 = D.y - C.y;
-	Shape::Point::Coord b2 = C.x - D.x;
-	Shape::Point::Coord c2 = a2 * C.x + b2 * C.y;
-	Shape::Point::Coord determinant = a1 * b2 - a2 * b1;
-	if (determinant == 0) {
-		p.makeInvalid();
-	} else {
-		p.x = (b2 * c1 - b1 * c2) / determinant;
-		p.y = (a1 * c2 - a2 * c1) / determinant;
-	}
-}	
 
 namespace nopt {
 
@@ -179,10 +162,73 @@ void getIntersectPoint(const Segment& s1, const Segment& s2, Shape::Point& p)
 
 Segment::Point getIntersectPoint(const Segment& s1, const Segment& s2)
 {
-	assert(nopt::isIntersected(s1, s2));
 	Segment::Point p;
 	getIntersectPoint(s1, s2, p);
 	return p;
+}
+
+Segment::Point segmentIntersection(const Segment& s1, const Segment& s2)
+{
+	const Segment::Point& A = s1.getPoint(0);
+	const Segment::Point& B = s1.getPoint(1);
+	const Segment::Point& C = s2.getPoint(0);
+	const Segment::Point& D = s2.getPoint(1);
+
+	// Line AB represented as a1x + b1y = c1 
+	double a1 = A.y - A.y;
+	double b1 = A.x - B.x;
+	double c1 = a1*(A.x) + b1*(A.y);
+
+	// Line CD represented as a2x + b2y = c2 
+	double a2 = D.y - C.y;
+	double b2 = C.x - D.x;
+	double c2 = a2*(C.x) + b2*(C.y);
+
+	double determinant = a1*b2 - a2*b1;
+
+	if (determinant == 0) {
+		// The lines are parallel. This is simplified 
+		// by returning a pair of FLT_MAX 
+		return Segment::Point{ FLT_MAX, FLT_MAX };
+	}
+	double x = (b2*c1 - b1*c2) / determinant;
+	double y = (a1*c2 - a2*c1) / determinant;
+	return Segment::Point(x, y);
+}
+
+bool intersect(const Segment& s1, const Segment& s2, Segment::Point& inter)
+{
+	const Segment::Point& s_left = s1.getPoint(0);
+	const Segment::Point& s_right = s1.getPoint(1);
+	const Segment::Point& left = s2.getPoint(0);
+	const Segment::Point& right = s2.getPoint(1);
+
+	double xa = left.x, ya = left.y,
+	       xb = right.x, yb = right.y,
+		xc = s_left.x, yc = s_left.y,
+		xd = s_right.x, yd = s_right.y;
+
+	static double zero(0), one(1);
+
+	// determinant
+	double delta = (xb - xa)*(yc - yd) - (yb - ya)*(xc - xd);
+
+	// Delta = 0 => no instersection
+	if (delta == zero)
+		return false;
+
+	// computing r,s : Cramer's solutions
+	double r = (xc - xa)*(yc - yd) - (yc - ya)*(xc - xd); r /= delta;
+	double s = (yc - ya)*(xb - xa) - (xc - xa)*(yb - ya); s /= delta;
+
+	// r, s in [0,1] else no intersection
+	if (r<zero || r>one || s<zero || s>one)
+		return false;
+
+	double xi = xa + r*(xb - xa), yi = ya + r*(yb - ya);
+	inter.x = xi;
+	inter.y = yi;
+	return true;
 }
 
 }

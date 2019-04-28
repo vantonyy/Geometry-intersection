@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <numeric>
 
 namespace geometry {
 
@@ -25,7 +24,7 @@ public:
 	bool operator< (const Point& rhs) const
 	{
 		if (x != rhs.x) {
-			return m_x < rhs.x;
+			return x < rhs.x;
 		}
 		return y < rhs.y;
 	}
@@ -56,22 +55,6 @@ public:
 	bool operator!= (const Point& rhs) const
 	{
 		return !(*this == rhs);
-	}
-
-	bool isValid() const
-	{
-		return *this != invalidPoint();
-	}
-
-	void makeInvalid()
-	{
-		*this = invalidPoint();
-	}
-
-	static const Point<Coord>& invalidPoint()
-	{
-		static Point<Coord> point = {std::numeric_limits<Coord>::max(), std::numeric_limits<Coord>::max()};
-		return point;
 	}
 public:
 	Coord x;
